@@ -15,7 +15,7 @@ app.register(classRoutes)
 
 startReminderJob()
 
-app.listen({ port: 3000 }, (err) => {
+app.listen({ port: 3000, host: '0.0.0.0' }, (err) => {
   if (err) throw err
   console.log('Servidor rodando em http://localhost:3000')
 })
