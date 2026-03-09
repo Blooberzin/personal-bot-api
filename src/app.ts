@@ -7,7 +7,8 @@ import { startReminderJob } from './jobs/reminder'
 const app = Fastify()
 
 app.register(cors, {
-  origin: '*'
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
 })
 
 app.register(studentRoutes)
