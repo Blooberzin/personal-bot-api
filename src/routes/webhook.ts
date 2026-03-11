@@ -6,6 +6,8 @@ export async function webhookRoutes(app: FastifyInstance) {
   app.post('/webhook', async (request, reply) => {
     const body = request.body as any
 
+    console.log('Webhook recebido:', JSON.stringify(body, null, 2))
+
     if (body.event !== 'messages.upsert') return reply.send({ ok: true })
     
     const message = body.data?.messages?.[0]
@@ -15,8 +17,15 @@ export async function webhookRoutes(app: FastifyInstance) {
     const phone = message.key?.remoteJid?.replace('@s.whatsapp.net', '')
     const text = message.message?.conversation?.toLowerCase().trim()
 
+    console.log('Phone:', phone)
+    console.log('Text:', text)
+
     if (!phone || !text) return reply.send({ ok: true })
-    if (text !== 'sim' && text !== 'não' && text !== 'nao') return reply.send({ ok: true })
+
+    const isConfirmed = ['sim', 's', '1', 'yes', 'confirmo', 'confirmado'].includes(text)
+    const isCancelled = ['não', 'nao', 'n', '0', 'no', 'cancelo', 'cancelar'].includes(text)
+
+    if (!isConfirmed && !isCancelled) return reply.send({ ok: true })
 
     const student = await prisma.student.findFirst({ where: { phone } })
     if (!student) return reply.send({ ok: true })
@@ -32,7 +41,7 @@ export async function webhookRoutes(app: FastifyInstance) {
 
     if (!cls) return reply.send({ ok: true })
 
-    const confirmed = text === 'sim'
+    const confirmed = isConfirmed
     const newStatus = confirmed ? 'confirmed' : 'cancelled'
 
     await prisma.class.update({
