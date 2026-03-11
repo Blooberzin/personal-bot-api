@@ -19,9 +19,21 @@ export async function sendReminder(phone: string, name: string, date: Date) {
       'apikey': API_KEY,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({
-      number: phone,
-      text: message
-    })
+    body: JSON.stringify({ number: phone, text: message })
+  })
+}
+
+export async function sendReply(phone: string, confirmed: boolean) {
+  const message = confirmed
+    ? '✅ Presença confirmada! Te vejo na aula. 💪'
+    : '❌ Tudo bem! Aula cancelada. Qualquer coisa é só chamar. 😊'
+
+  await fetch(`${EVOLUTION_URL}/message/sendText/${INSTANCE}`, {
+    method: 'POST',
+    headers: {
+      'apikey': API_KEY,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ number: phone, text: message })
   })
 }
