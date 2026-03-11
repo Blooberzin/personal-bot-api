@@ -2,6 +2,7 @@ import Fastify from 'fastify'
 import cors from '@fastify/cors'
 import { studentRoutes } from './routes/students'
 import { classRoutes } from './routes/classes'
+import { webhookRoutes } from './routes/webhook'
 import { startReminderJob } from './jobs/reminder'
 
 const app = Fastify()
@@ -13,6 +14,7 @@ app.register(cors, {
 
 app.register(studentRoutes)
 app.register(classRoutes)
+app.register(webhookRoutes)
 
 startReminderJob()
 
