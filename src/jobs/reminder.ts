@@ -3,7 +3,7 @@ import { prisma } from '../lib/prisma'
 import { sendReminder } from '../services/whatsapp'
 
 export function startReminderJob() {
-  cron.schedule('*/30 * * * *', async () => {
+  cron.schedule('* * * * *', async () => {
     console.log('Verificando aulas próximas...')
 
     const now = new Date()
