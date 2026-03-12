@@ -27,6 +27,10 @@ export function startReminderJob() {
         where: { id: cls.id },
         data: { reminderSent: true }
       })
+      await prisma.student.update({
+        where: { id: cls.student.id },
+        data: { lastRemindedClassId: cls.id }
+      })
       console.log(`Lembrete enviado para ${cls.student.name} ✅`)
     }
   })

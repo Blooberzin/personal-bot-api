@@ -12,6 +12,7 @@ model Student {
   name      String
   phone     String
   active    Boolean  @default(true)
+  lastRemindedClassId String?
   createdAt DateTime @default(now())
   classes   Class[]
 }

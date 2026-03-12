@@ -14,7 +14,6 @@ export async function webhookRoutes(app: FastifyInstance) {
 
     const phone = message.remoteJid?.replace('@s.whatsapp.net', '')
     
-    // Tenta pegar o texto de diferentes lugares
     const text = (
       body.data?.message?.conversation ||
       body.data?.message?.extendedTextMessage?.text ||
@@ -34,13 +33,9 @@ export async function webhookRoutes(app: FastifyInstance) {
     const student = await prisma.student.findFirst({ where: { phone } })
     if (!student) return reply.send({ ok: true })
 
-    const cls = await prisma.class.findFirst({
-      where: {
-        studentId: student.id,
-        status: 'pending',
-        reminderSent: true
-      },
-      orderBy: { scheduledAt: 'asc' }
+    // Usa o ID da aula que recebeu o último lembrete
+    const cls = await prisma.class.findUnique({
+      where: { id: student.lastRemindedClassId ?? '' }
     })
 
     if (!cls) return reply.send({ ok: true })
