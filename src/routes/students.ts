@@ -17,12 +17,18 @@ export async function studentRoutes(app: FastifyInstance) {
     return reply.status(201).send(student)
   })
 
-  // Deletar um aluno
-  app.delete('/students/:id', async (request, reply) => {
-    const { id } = request.params as { id: string }
-    await prisma.student.delete({ where: { id } })
-    return reply.status(204).send()
-  })
+ // Deletar um aluno
+app.delete('/students/:id', async (request, reply) => {
+  const { id } = request.params as { id: string }
+  
+  // Primeiro deleta as aulas do aluno
+  await prisma.class.deleteMany({ where: { studentId: id } })
+  
+  // Depois deleta o aluno
+  await prisma.student.delete({ where: { id } })
+  
+  return reply.status(204).send()
+})
 
   // Atualizar um aluno
 app.patch('/students/:id', async (request, reply) => {
