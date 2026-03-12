@@ -6,10 +6,10 @@ export async function webhookRoutes(app: FastifyInstance) {
   app.post('/webhook', async (request, reply) => {
     const body = request.body as any
 
-    console.log('Webhook recebido:', JSON.stringify(body, null, 2))
+    // Loga tudo sem filtro
+    console.log('Webhook recebido - evento:', body.event)
+    console.log('Body completo:', JSON.stringify(body, null, 2))
 
-    if (body.event !== 'messages.upsert') return reply.send({ ok: true })
-    
     const message = body.data?.messages?.[0]
     if (!message) return reply.send({ ok: true })
     if (message.key?.fromMe) return reply.send({ ok: true })
