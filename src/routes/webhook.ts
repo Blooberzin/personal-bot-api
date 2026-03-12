@@ -6,16 +6,20 @@ export async function webhookRoutes(app: FastifyInstance) {
   app.post('/webhook', async (request, reply) => {
     const body = request.body as any
 
-    // Loga tudo sem filtro
-    console.log('Webhook recebido - evento:', body.event)
-    console.log('Body completo:', JSON.stringify(body, null, 2))
+    if (body.event !== 'messages.upsert') return reply.send({ ok: true })
 
-    const message = body.data?.messages?.[0]
+    const message = body.data?.key
     if (!message) return reply.send({ ok: true })
-    if (message.key?.fromMe) return reply.send({ ok: true })
+    if (message.fromMe) return reply.send({ ok: true })
 
-    const phone = message.key?.remoteJid?.replace('@s.whatsapp.net', '')
-    const text = message.message?.conversation?.toLowerCase().trim()
+    const phone = message.remoteJid?.replace('@s.whatsapp.net', '')
+    
+    // Tenta pegar o texto de diferentes lugares
+    const text = (
+      body.data?.message?.conversation ||
+      body.data?.message?.extendedTextMessage?.text ||
+      body.data?.message?.editedMessage?.message?.protocolMessage?.editedMessage?.conversation
+    )?.toLowerCase().trim()
 
     console.log('Phone:', phone)
     console.log('Text:', text)
