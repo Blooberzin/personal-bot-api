@@ -1,7 +1,7 @@
 import 'dotenv/config'
 
 const EVOLUTION_URL = 'https://evolution-api-production-4f8d.up.railway.app'
-const API_KEY = 'dd64563a5313e4d904b0576831f7bfa121542ff8cdd5f421a5c4f30c9f1b8c19'
+const API_KEY = 'automatheus2026'
 const INSTANCE = 'personal-bot'
 
 export async function sendReminder(phone: string, name: string, date: Date) {
